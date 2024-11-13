@@ -5,17 +5,35 @@ library(dplyr)
 
 # UI
 ui <- fluidPage(
-  titlePanel("Sample Coverage Exploration"),
-  sidebarLayout(
-    sidebarPanel(
-      selectInput("month", "Select Month", choices = NULL),  # Month dropdown populated dynamically
-      helpText("Use the dropdown to select a month and see sampling details for each site.")
-    ),
-    mainPanel(
-      leafletOutput("map"),  # Map output
-      DTOutput("data_table"),  # Interactive data table for filtered metadata
-      textOutput("siteInfo")  # Display site information upon selection
-    )
+  tags$head(
+    tags$style(HTML("
+      body { font-family: Arial, sans-serif; }
+      .container { max-width: 90%; margin-top: 20px; }
+      #siteInfo { margin-top: 15px; font-size: 1.1em; font-weight: bold; }
+      .title-panel { font-size: 1.5em; font-weight: bold; color: #2c3e50; text-align: center; }
+      .help-text { font-size: 0.9em; color: #7f8c8d; }
+    "))
+  ),
+  
+  div(class = "container",
+      div(class = "title-panel", "Sample Coverage Exploration"),
+      
+      fluidRow(
+        column(3,
+               selectInput("month", "Select Month", choices = NULL),
+               div(class = "help-text", "Use the dropdown to select a month and see sampling details for each site.")
+        ),
+        column(9,
+               leafletOutput("map", height = "500px")
+        )
+      ),
+      
+      fluidRow(
+        column(12,
+               textOutput("siteInfo"),
+               DTOutput("data_table")
+        )
+      )
   )
 )
 
@@ -58,7 +76,9 @@ server <- function(input, output, session) {
                           "<br>Replicates at 10m: ", replicates_10m,
                           "<br>Replicates at 100m: ", replicates_100m),
           layerId = ~site_id,  # Assign each marker a unique layerId based on site_id
-          radius = 5
+          radius = 5,
+          color = "#2c3e50",  # Dark blue color for markers
+          fillOpacity = 0.7
         )
     } else {
       print("No data available for the selected month.")  # Debugging message
@@ -85,9 +105,12 @@ server <- function(input, output, session) {
     }
   })
   
-  # Render dynamic data table filtered by selected month (no formatting)
+  # Render dynamic data table filtered by selected month and show all rows
   output$data_table <- renderDT({
-    datatable(reactive_raw_data())
+    datatable(
+      reactive_raw_data(),
+      options = list(pageLength = -1)  # Show all rows by default
+    )
   })
 }
 
