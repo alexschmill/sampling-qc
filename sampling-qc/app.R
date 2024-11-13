@@ -1,6 +1,7 @@
 library(shiny)
 library(leaflet)
 library(DT)
+library(dplyr)
 
 # UI
 ui <- fluidPage(
@@ -56,6 +57,7 @@ server <- function(input, output, session) {
           popup = ~paste0("Site: ", site_id,
                           "<br>Replicates at 10m: ", replicates_10m,
                           "<br>Replicates at 100m: ", replicates_100m),
+          layerId = ~site_id,  # Assign each marker a unique layerId based on site_id
           radius = 5
         )
     } else {
@@ -66,10 +68,11 @@ server <- function(input, output, session) {
   # Display site information upon selection
   output$siteInfo <- renderText({
     req(input$map_marker_click)
-    selected_site <- input$map_marker_click$id
+    click <- input$map_marker_click
     
-    # Filter data for the selected site
-    site_info <- reactive_data() %>% filter(site_id == selected_site)
+    # Find the clicked site based on lat/lng, in case id is unavailable
+    site_info <- reactive_data() %>%
+      filter(lon == click$lng & lat == click$lat)
     
     if (nrow(site_info) > 0) {
       paste0(
@@ -82,7 +85,7 @@ server <- function(input, output, session) {
     }
   })
   
-  # Render dynamic data table filtered by selected month
+  # Render dynamic data table filtered by selected month (no formatting)
   output$data_table <- renderDT({
     datatable(reactive_raw_data())
   })
