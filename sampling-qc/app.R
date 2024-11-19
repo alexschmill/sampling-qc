@@ -21,7 +21,8 @@ ui <- fluidPage(
       fluidRow(
         column(3,
                selectInput("month", "Select Month", choices = NULL),
-               div(class = "help-text", "Use the dropdown to select a month and see sampling details for each site.")
+               div(class = "help-text", "Use the dropdown to select a month and see sampling details for each site."),
+               checkboxInput("color_code", "Color-code sites by sampling completeness", FALSE)
         ),
         column(9,
                leafletOutput("map", height = "500px")
@@ -55,18 +56,32 @@ server <- function(input, output, session) {
     metadata_raw %>% filter(month == input$month)
   })
   
+  # Determine marker color based on sampling_completeness
+  marker_colors <- reactive({
+    if (input$color_code) {
+      reactive_data() %>%
+        mutate(color = case_when(
+          sampling_completeness == "Complete" ~ "#28a745",  # Green
+          sampling_completeness %in% c("Undersampled", "Oversampled") ~ "#dc3545",  # Red
+          TRUE ~ "#6c757d"  # Default: Grey for unknown
+        ))
+    } else {
+      reactive_data() %>% mutate(color = "#2c3e50")  # Default dark blue
+    }
+  })
+  
   # Render Map
   output$map <- renderLeaflet({
     leaflet() %>%
       addTiles() %>%
-      fitBounds(-56, 47, -55, 48) # Approximate coordinates for south coast of Newfoundland
+      fitBounds(-57, 46, -53, 48) # Approximate coordinates for south coast of Newfoundland
   })
   
   # Update Map with filtered data
   observe({
-    map_data <- reactive_data()
+    map_data <- marker_colors()
     
-    # Update the map with the current data
+    # Update map markers with color-coding
     leafletProxy("map", data = map_data) %>%
       clearMarkers() %>%
       addCircleMarkers(
@@ -74,10 +89,11 @@ server <- function(input, output, session) {
         popup = ~paste0("Site: ", site_id,
                         "<br>Replicates at surface: ", Surface,
                         "<br>Replicates at 10m: ", replicates_10m,
-                        "<br>Replicates at 100m: ", replicates_100m),
+                        "<br>Replicates at 100m: ", replicates_100m,
+                        "<br>Sampling completeness: ", sampling_completeness),
         layerId = ~site_id,  # Assign each marker a unique layerId based on site_id
-        radius = 3,
-        color = "#2c3e50",  # Dark blue color for markers
+        radius = 5,
+        color = ~color,  # Dynamically set color
         fillOpacity = 0.7
       )
   })
@@ -91,12 +107,12 @@ server <- function(input, output, session) {
     site_info <- reactive_data() %>%
       filter(lon == click$lng & lat == click$lat)
     
-    # Format the text output
     paste0(
       "Site: ", site_info$site_id,
       "\nReplicates at surface: ", site_info$Surface,
       "\nReplicates at 10m: ", site_info$replicates_10m,
-      "\nReplicates at 100m: ", site_info$replicates_100m
+      "\nReplicates at 100m: ", site_info$replicates_100m,
+      "\nSampling completeness: ", site_info$sampling_completeness
     )
   })
   
