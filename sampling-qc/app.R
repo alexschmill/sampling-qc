@@ -59,30 +59,27 @@ server <- function(input, output, session) {
   output$map <- renderLeaflet({
     leaflet() %>%
       addTiles() %>%
-      fitBounds(-57, 46, -53, 48) # Approximate coordinates for south coast of Newfoundland
+      fitBounds(-56, 47, -55, 48) # Approximate coordinates for south coast of Newfoundland
   })
   
   # Update Map with filtered data
   observe({
     map_data <- reactive_data()
     
-    # Only proceed if map_data is not empty
-    if (nrow(map_data) > 0) {
-      leafletProxy("map", data = map_data) %>%
-        clearMarkers() %>%
-        addCircleMarkers(
-          ~lon, ~lat, 
-          popup = ~paste0("Site: ", site_id,
-                          "<br>Replicates at 10m: ", replicates_10m,
-                          "<br>Replicates at 100m: ", replicates_100m),
-          layerId = ~site_id,  # Assign each marker a unique layerId based on site_id
-          radius = 5,
-          color = "#2c3e50",  # Dark blue color for markers
-          fillOpacity = 0.7
-        )
-    } else {
-      print("No data available for the selected month.")  # Debugging message
-    }
+    # Update the map with the current data
+    leafletProxy("map", data = map_data) %>%
+      clearMarkers() %>%
+      addCircleMarkers(
+        ~lon, ~lat, 
+        popup = ~paste0("Site: ", site_id,
+                        "<br>Replicates at surface: ", Surface,
+                        "<br>Replicates at 10m: ", replicates_10m,
+                        "<br>Replicates at 100m: ", replicates_100m),
+        layerId = ~site_id,  # Assign each marker a unique layerId based on site_id
+        radius = 3,
+        color = "#2c3e50",  # Dark blue color for markers
+        fillOpacity = 0.7
+      )
   })
   
   # Display site information upon selection
@@ -90,19 +87,17 @@ server <- function(input, output, session) {
     req(input$map_marker_click)
     click <- input$map_marker_click
     
-    # Find the clicked site based on lat/lng, in case id is unavailable
+    # Find the clicked site based on lat/lng
     site_info <- reactive_data() %>%
       filter(lon == click$lng & lat == click$lat)
     
-    if (nrow(site_info) > 0) {
-      paste0(
-        "Site: ", site_info$site_id,
-        "\nReplicates at 10m: ", site_info$replicates_10m,
-        "\nReplicates at 100m: ", site_info$replicates_100m
-      )
-    } else {
-      "No data available for this site."
-    }
+    # Format the text output
+    paste0(
+      "Site: ", site_info$site_id,
+      "\nReplicates at surface: ", site_info$Surface,
+      "\nReplicates at 10m: ", site_info$replicates_10m,
+      "\nReplicates at 100m: ", site_info$replicates_100m
+    )
   })
   
   # Render dynamic data table filtered by selected month and show all rows

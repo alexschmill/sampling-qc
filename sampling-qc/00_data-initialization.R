@@ -23,7 +23,20 @@ metadata <- metadata_raw %>%
   pivot_wider(names_from = depth, values_from = num_replicates, values_fill = 0) %>%
   rename(replicates_10m = `10`, replicates_100m = `100`)
 
-# Merge with site_coords to include latitude and longitude
+# Merge with site_coords to include latitude and longitude and assess completeness
 sample_data <- metadata %>%
   left_join(site_coords, by = "site_id") %>%
-  mutate(lon = as.numeric(lon), lat = as.numeric(lat))  # Ensure lon and lat are numeric
+  mutate(
+    lon = as.numeric(lon), 
+    lat = as.numeric(lat),
+    sampling_completeness = case_when(
+      # Check for WB completeness
+      site_id == "WB" & Surface == 3 ~ "Complete",
+      site_id == "WB" & Surface < 3 ~ "Undersampled",
+      # Check for completeness for other sites
+      site_id != "WB" & replicates_10m == 3 & replicates_100m == 3 ~ "Complete",
+      site_id != "WB" & (replicates_10m + replicates_100m) < 6 ~ "Undersampled",
+      site_id != "WB" & (replicates_10m + replicates_100m) > 6 ~ "Oversampled",
+      TRUE ~ "Unknown"  # Fallback case
+    )
+  )
