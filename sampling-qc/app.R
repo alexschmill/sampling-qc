@@ -38,12 +38,11 @@ ui <- fluidPage(
   )
 )
 
-# Server
 server <- function(input, output, session) {
   
-  # Update month dropdown with ordered month choices from May to September
+  # Update month dropdown with abbreviated month choices
   observe({
-    updateSelectInput(session, "month", choices = c("May", "June", "July", "August", "September"))
+    updateSelectInput(session, "month", choices = c("May", "Jun", "Jul", "Aug", "Sep"))
   })
   
   # Reactive data based on month selection for map plotting
@@ -96,6 +95,24 @@ server <- function(input, output, session) {
         color = ~color,  # Dynamically set color
         fillOpacity = 0.7
       )
+  })
+  
+  # Highlight samples in the data table when a site is selected
+  observeEvent(input$map_marker_click, {
+    click <- input$map_marker_click
+    if (!is.null(click)) {
+      # Find the site_id for the clicked marker
+      selected_site_id <- reactive_data() %>%
+        filter(lon == click$lng & lat == click$lat) %>%
+        pull(site_id)
+      
+      # Get row indices for the matching site_id in the raw metadata table
+      selected_rows <- which(reactive_raw_data()$site_id == selected_site_id)
+      
+      # Update the DataTable selection
+      proxy <- dataTableProxy("data_table")
+      selectRows(proxy, selected_rows)
+    }
   })
   
   # Display site information upon selection

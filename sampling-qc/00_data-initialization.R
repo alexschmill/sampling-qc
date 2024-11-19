@@ -1,16 +1,17 @@
-# Load data
-site_coords <- read_csv("~/Desktop/IOF/STAT545/PartB/sampling_qc_app/data/site_coords.csv")
-metadata_raw <- read_csv("~/Desktop/IOF/STAT545/PartB/sampling_qc_app/data/cnfasar_metadata.csv")
-
 # Load required packages
 library(dplyr)
 library(lubridate)
 library(tidyr)
 
+# Load data
+site_coords <- read.csv("~/Desktop/IOF/STAT545/PartB/sampling_qc_app/data/site_coords.csv")
+metadata_raw <- read.csv("~/Desktop/IOF/STAT545/PartB/sampling_qc_app/data/cnfasar_metadata.csv")
+
 # Original raw metadata table with consistent month format
-metadata_raw <- metadata %>%
+metadata_raw <- metadata_raw %>%
   mutate(date = ymd(as.character(date)),  # Convert date to Date format
          month = month(date, label = TRUE, abbr = TRUE))  # Add month column with abbreviated names
+
 
 # Filter out controls and prepare cleaned metadata dataset
 metadata <- metadata_raw %>%
@@ -40,3 +41,8 @@ sample_data <- metadata %>%
       TRUE ~ "Unknown"  # Fallback case
     )
   )
+
+# add coordinates to the raw data
+metadata_raw <- metadata_raw %>%
+  left_join(sample_data %>% select(site_id, lon, lat) %>% distinct(), by = "site_id") %>%
+  select(sample_id, sample, site_id, depth, date, month, lat, lon)
