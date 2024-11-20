@@ -5,7 +5,8 @@ Welcome! This is an interactive application to assess the sampling
 design and quality of field work being conducted for the CNFASAR project
 taking place in the South Coast of Newfoundland.
 
-There are two datasets used to build this app:
+There are two RDS files within the data folder that are used to build
+this app:
 
 1.  *metadata_raw.rds:* This file contains the metadata for each
     individual environmental DNA (eDNA) sample taken. Within this file
