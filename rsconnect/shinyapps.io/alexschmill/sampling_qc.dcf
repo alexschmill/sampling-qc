@@ -1,0 +1,13 @@
+name: sampling_qc
+title: sampling_qc
+username: alexschmill
+account: alexschmill
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13394654
+bundleId: 9388915
+url: https://alexschmill.shinyapps.io/sampling_qc/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: 00_data-initialization.R|csvs/cnfasar_metadata.csv|csvs/site_coords.csv|readme_png/sampling_qc_app_screenshot.png|README.md|README.Rmd
