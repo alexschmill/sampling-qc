@@ -2,6 +2,10 @@ library(shiny)
 library(leaflet)
 library(DT)
 library(dplyr)
+library(lubridate)
+
+metadata_raw <- readRDS("~/Desktop/IOF/STAT545/PartB/sampling_qc_app/metadata_raw.rds")
+sample_data <- readRDS("~/Desktop/IOF/STAT545/PartB/sampling_qc_app/sample_data.rds")
 
 # UI
 ui <- fluidPage(
