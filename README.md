@@ -1,7 +1,5 @@
-Sampling Quality Control
+Sampling Design Quality Control App
 ================
-
-# Sampling Design Quality Control App
 
 Welcome! This is an interactive application to assess the sampling
 design and quality of field work being conducted for the CNFASAR project
@@ -57,4 +55,4 @@ the planning and implementation of the proposed NMCA, ensuring that
 conservation measures are grounded in robust scientific evidence and
 tailored to the unique ecological dynamics of this region.
 
-<img src="readme_png/sampling_qc_app_screenshot.png">
+<img src="readme_png/sampling_qc_app_screenshot.png"/>

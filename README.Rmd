@@ -1,9 +1,7 @@
 ---
-title: "Sampling Quality Control"
+title: "Sampling Design Quality Control App"
 output: github_document
 ---
-
-# Sampling Design Quality Control App
 
 Welcome! This is an interactive application to assess the sampling design and quality of field work being conducted for the CNFASAR project taking place in the South Coast of Newfoundland.
 
@@ -17,6 +15,4 @@ Access the app here: <https://alexschmill.shinyapps.io/sampling-qc/>
 
 **Project Abstract**: Establishing effective Marine Protected Areas (MPAs) requires a detailed understanding of marine biodiversity patterns to guide conservation and management decisions. As marine ecosystems face increasing pressures from climate change, overfishing, and habitat degradation, baseline biodiversity information is essential for designing areas that maximize ecological resilience and protection. Our work focuses on Newfoundland’s south coast, a region under consideration for a National Marine Conservation Area (NMCA), where environmental DNA (eDNA) metabarcoding is being used to provide comprehensive and non-invasive biodiversity assessments across spatial and temporal scales. To enhance the utility of eDNA data, our study integrates eDNA metabarcoding with dynamic species distribution models (DSDMs) to address key uncertainties in species presence interpretation, such as eDNA transport and persistence. By evaluating the relationship between eDNA-derived indices and habitat suitability predictions, we aim to improve the reliability of species occurrence data and provide insights into critical habitats for vulnerable species. This research will not only establish baseline biodiversity patterns but also directly inform the planning and implementation of the proposed NMCA, ensuring that conservation measures are grounded in robust scientific evidence and tailored to the unique ecological dynamics of this region.
 
-        
-<img src="readme_png/sampling_qc_app_screenshot.png">
-
+<img src="readme_png/sampling_qc_app_screenshot.png"/>

@@ -4,8 +4,8 @@ library(DT)
 library(dplyr)
 library(lubridate)
 
-metadata_raw <- readRDS("~/Desktop/IOF/STAT545/PartB/sampling_qc_app/metadata_raw.rds")
-sample_data <- readRDS("~/Desktop/IOF/STAT545/PartB/sampling_qc_app/sample_data.rds")
+sample_data <- readRDS("data/sample_data.rds")
+metadata_raw <- readRDS("data/metadata_raw.rds")
 
 # UI
 ui <- fluidPage(
