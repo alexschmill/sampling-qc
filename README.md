@@ -31,7 +31,7 @@ There are two datasets used to build this app:
     samples per depth at each site, with one control sample per day of
     sampling to account for any possible contamination).
 
-Access the app here: <https://alexschmill.shinyapps.io/sampling-qc/>
+Access the app here: <https://alexschmill.shinyapps.io/sampling_qc/>
 
 **Project Abstract**: Establishing effective Marine Protected Areas
 (MPAs) requires a detailed understanding of marine biodiversity patterns
